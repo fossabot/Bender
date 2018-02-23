@@ -21,7 +21,7 @@ open class Convolution: NetworkLayer {
     var weightsPointer: Data?
     var biasPointer: Data?
 
-    private var prevSize: LayerSize!
+    var prevSize: LayerSize!
     public var convSize: ConvSize
 
     var conv: MPSCNNConvolution?
@@ -30,7 +30,7 @@ open class Convolution: NetworkLayer {
 
     var useBias: Bool
 
-    public init(convSize: ConvSize, neuronType: ActivationNeuronType = .none, useBias: Bool = false, padding: PaddingType = .same, weights: Data? = nil, bias: Data? = nil, id: String? = nil) {
+    public required init(convSize: ConvSize, neuronType: ActivationNeuronType = .none, useBias: Bool = false, padding: PaddingType = .same, weights: Data? = nil, bias: Data? = nil, id: String? = nil) {
         self.convSize = convSize
         self.neuronType = neuronType
         self.useBias = useBias
@@ -99,6 +99,8 @@ open class Convolution: NetworkLayer {
             outputFeatureChannels: convSize.outputChannels,
             neuronFilter: neuronType.createNeuron(device: device))
 
+        desc.dilationRateX = convSize.dilationX
+        desc.dilationRateY = convSize.dilationY
         desc.strideInPixelsX = convSize.strideX
         desc.strideInPixelsY = convSize.strideY
 
